@@ -52,20 +52,20 @@ class Person:
             return False, err
 
 class PersonSchema(Schema):
-    person_id = fields.Int(attribute='person_id')
+    personId = fields.Int(attribute='person_id')
     email = fields.Str()
-    full_name = fields.Str()
-    profile_url = fields.Str()
-    profile_url_customized = fields.Boolean()
+    fullName = fields.Str(attribute='full_name')
+    profileUrl = fields.Str(attribute='profile_url')
+    profileUrlCustomized = fields.Boolean(attribute='profile_url_customized')
     timezone = fields.Str()
 
     class Meta:
         fields = (
-            'person_id',
+            'personId',
             'email',
-            'full_name',
-            'profile_url',
-            'profile_url_customized',
+            'fullName',
+            'profileUrl',
+            'profileUrlCustomized',
             'timezone'
         )
         ordered = True
