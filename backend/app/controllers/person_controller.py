@@ -1,12 +1,39 @@
 '''person_controller.py'''
-from flask import Blueprint, request
+from flask import Blueprint, request, g
 from app.repositories import person_repository
 from app.models.person_model import Person
 from app.config.logger import log
 from app.utilities.api_response_format import api_response_format
 from app.utilities.auth import jwt_required
 
+
 person_blueprint = Blueprint('persons', __name__)
+
+@person_blueprint.route('/persons/me', methods=['GET'])
+@jwt_required
+def get_me():
+    try:
+        # the person_id is from access_token
+        person_id = int(g.user.get('sub'))
+        person = person_repository.get_person_by_id(person_id)
+
+        if not person:
+            return api_response_format(
+                message="Person not found",
+                data={},
+                status_code=404
+            )
+
+        return api_response_format(
+            message="User retrieved successfully",
+            data={ 'user': person.serialize() },
+            status_code=200
+        )
+    except Exception as e:
+        return api_response_format(
+            message=str(e),
+            status_code=500
+        )
 
 @person_blueprint.route('/persons', methods=['GET'])
 @jwt_required
