@@ -2,6 +2,7 @@ import { useReducer, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../helpers/apiClient';
 import constants from '../../constants';
+import { useSession } from '../../context/SessionContext';
 
 const ACTION_TYPES = {
   SET_EMAIL:    'SET_EMAIL',
@@ -51,6 +52,7 @@ function reducer(state: LoginState, action: LoginAction): LoginState {
 
 export default function AuthScreen() {
   const navigate = useNavigate();
+  const { refresh } = useSession();
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const handleLogin = useCallback(async () => {
@@ -62,18 +64,24 @@ export default function AuthScreen() {
         email:    state.email,
         password: state.password,
       });
-      localStorage.setItem(constants.ACCESS_TOKEN,(res.data as { token: string }).token);
-      window.location.href = '/dashboard';
+
+      // Save token then refresh session so PrivateRoute lets us through
+      localStorage.setItem(
+        constants.ACCESS_TOKEN,
+        (res.data as { data: { access_token: string } }).data.access_token
+      );
+      await refresh();
+      navigate('/dashboard');
 
     } catch {
       dispatch({ type: ACTION_TYPES.SET_ERROR, error: 'Invalid email or password.' });
     } finally {
       dispatch({ type: ACTION_TYPES.SET_LOADING, loading: false });
     }
-  }, [state.email, state.password, navigate]);
+  }, [state.email, state.password]);
 
   return (
-    <div className="ax-w-140.25 bg-white rounded-2xl shadow-lg p-8 space-y-5">
+    <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg p-8 space-y-5">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Sign in</h1>
         <p className="text-sm text-gray-500 mt-1">Welcome back</p>

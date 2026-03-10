@@ -14,6 +14,7 @@ interface SessionContextType {
     isLoading:       boolean;
     isAuthenticated: boolean;
     logout:          () => void;
+    refresh:         () => Promise<void>;
 }
 
 const SessionContext = createContext<SessionContextType | null>(null);
@@ -31,38 +32,47 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
     const [isLoading, setIsLoading] = useState<boolean>(!person);
 
-    useEffect(() => {
-    if (person) return;
+    async function refresh() {
+        const token = localStorage.getItem(constants.ACCESS_TOKEN);
+        if (!token) return;
 
-    // ← ADD THIS CHECK
-    const token = localStorage.getItem(constants.ACCESS_TOKEN);
-    if (!token) {
-        setIsLoading(false);
-        return;
-    }
-
-    getMe()
-        .then(res => {
+        try {
+            const res = await getMe();
             const fetchedPerson = res.data.data.user;
             setPerson(fetchedPerson);
             sessionStorage.setItem('session_person', JSON.stringify(fetchedPerson));
-        })
-        .catch(() => {
+        } catch {
             sessionStorage.removeItem('session_person');
-            localStorage.removeItem('access_token');
-        })
-        .finally(() => setIsLoading(false));
+            localStorage.removeItem(constants.ACCESS_TOKEN);
+            setPerson(null);
+        }
+    }
+
+    useEffect(() => {
+        if (person) {
+            setIsLoading(false);
+            return;
+        }
+
+        const token = localStorage.getItem(constants.ACCESS_TOKEN);
+        if (!token) {
+            setIsLoading(false);
+            return;
+        }
+
+        setIsLoading(true);
+        refresh().finally(() => setIsLoading(false));
     }, []);
 
     function logout() {
         sessionStorage.removeItem('session_person');
-        localStorage.removeItem('access_token');
+        localStorage.removeItem(constants.ACCESS_TOKEN);
         setPerson(null);
     }
 
     return (
         <SessionContext.Provider
-            value={{ person, isLoading, isAuthenticated: !!person, logout }}
+            value={{ person, isLoading, isAuthenticated: !!person, logout, refresh }}
         >
             {children}
         </SessionContext.Provider>
