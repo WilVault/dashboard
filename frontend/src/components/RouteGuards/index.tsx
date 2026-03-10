@@ -1,5 +1,4 @@
 import { Navigate } from 'react-router-dom';
-import { Outlet } from 'react-router-dom';
 import { useSession } from '../../context/SessionContext';
 
 function LoadingSpinner() {

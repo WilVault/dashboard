@@ -62,7 +62,7 @@ export default function AuthScreen() {
         email:    state.email,
         password: state.password,
       });
-      localStorage.setItem(constants.ACCESS_TOKEN, res.data.data.access_token);
+      localStorage.setItem(constants.ACCESS_TOKEN,(res.data as { token: string }).token);
       window.location.href = '/dashboard';
 
     } catch {
@@ -73,7 +73,7 @@ export default function AuthScreen() {
   }, [state.email, state.password, navigate]);
 
   return (
-    <div className="max-w-[561px] bg-white rounded-2xl shadow-lg p-8 space-y-5">
+    <div className="ax-w-140.25 bg-white rounded-2xl shadow-lg p-8 space-y-5">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Sign in</h1>
         <p className="text-sm text-gray-500 mt-1">Welcome back</p>
