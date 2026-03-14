@@ -6,14 +6,19 @@ from app.models.person_model import Person
 def get_all_person() -> list[Person]:
     query = '''
         SELECT
-            id,
-            email,
-            full_name,
-            profile_url,
-            profile_url_customized,
-            timezone
+            p.id,
+            p.email,
+            p.full_name,
+            p.profile_url,
+            p.profile_url_customized,
+            p.timezone,
+            p.currency_id,
+            c.currency,
+            c.description AS currency_description,
+            c.emoji AS currency_emoji
         FROM
-            person
+            person p
+        LEFT JOIN currency c ON c.id = p.currency_id
     '''
     rows = database.select_query(query)
     return [Person.map(r) for r in rows]
@@ -21,23 +26,26 @@ def get_all_person() -> list[Person]:
 def get_person_by_id(person_id: int) -> Optional[Person]:
     query = '''
         SELECT
-            id,
-            email,
-            full_name,
-            profile_url,
-            profile_url_customized,
-            timezone
+            p.id,
+            p.email,
+            p.full_name,
+            p.profile_url,
+            p.profile_url_customized,
+            p.timezone,
+            p.currency_id,
+            c.currency,
+            c.description AS currency_description,
+            c.emoji AS currency_emoji
         FROM
-            person
+            person p
+        LEFT JOIN currency c ON c.id = p.currency_id
         WHERE
-            person.id = %s
+            p.id = %s
         LIMIT 1;
     '''
-
     rows = database.select_query(query, [person_id])
     if not rows:
         return None
-
     return Person.map(rows[0])
 
 def find_by_email(email: str) -> Optional[Person]:

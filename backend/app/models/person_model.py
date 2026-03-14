@@ -2,6 +2,8 @@
 from marshmallow import Schema, fields, ValidationError, validate
 from datetime import datetime
 from typing import Optional
+from app.models.currency_model import Currency, CurrencySchema
+
 
 class Person:
     def __init__(self):
@@ -12,6 +14,7 @@ class Person:
         self.profile_url: str = None
         self.profile_url_customized: bool = False
         self.timezone: str = None
+        self.currency: Optional[Currency] = None
         self.created_at: Optional[datetime] = None
         self.updated_at: Optional[datetime] = None
 
@@ -30,6 +33,15 @@ class Person:
         p.timezone = row.get("timezone")
         p.created_at = row.get("created_at")
         p.updated_at = row.get("updated_at")
+
+        if row.get("currency"):
+            p.currency = Currency.map({
+                "id": row.get("currency_id"),
+                "currency": row.get("currency"),
+                "description": row.get("currency_description"),
+                "emoji": row.get("currency_emoji"),
+            })
+
         return p
 
     def serialize(self) -> dict:
@@ -51,12 +63,14 @@ class Person:
         except ValidationError as err:
             return False, err
 
+
 class PersonSchema(Schema):
     personId = fields.Int(attribute='person_id')
     email = fields.Str()
     fullName = fields.Str(attribute='full_name')
     profileUrl = fields.Str(attribute='profile_url')
     profileUrlCustomized = fields.Boolean(attribute='profile_url_customized')
+    currency = fields.Nested(CurrencySchema, allow_none=True)
     timezone = fields.Str()
 
     class Meta:
@@ -66,13 +80,16 @@ class PersonSchema(Schema):
             'fullName',
             'profileUrl',
             'profileUrlCustomized',
-            'timezone'
+            'currency',
+            'timezone',
         )
         ordered = True
+
 
 class LoginSchema(Schema):
     email = fields.Email(required=True)
     password = fields.Str(required=True)
+
 
 class RegisterSchema(Schema):
     email = fields.Email(required=True)
