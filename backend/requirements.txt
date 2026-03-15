@@ -4,6 +4,8 @@ bcrypt==5.0.0
 billiard==4.2.2
 blinker==1.9.0
 celery==5.5.3
+certifi==2026.2.25
+charset-normalizer==3.4.5
 click==8.3.0
 click-didyoumean==0.3.1
 click-plugins==1.1.1.2
@@ -14,6 +16,7 @@ Flask==3.0.3
 flask-cors==6.0.2
 Flask-WTF==1.2.2
 gunicorn==25.1.0
+idna==3.11
 itsdangerous==2.2.0
 Jinja2==3.1.6
 kombu==5.5.4
@@ -28,9 +31,13 @@ pymongo==4.15.3
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 redis==7.0.1
+requests==2.32.5
+resend==2.23.0
 six==1.17.0
 sqlparse==0.5.3
+typing_extensions==4.15.0
 tzdata==2025.2
+urllib3==2.6.3
 vine==5.1.0
 wcwidth==0.2.14
 Werkzeug==3.1.5
