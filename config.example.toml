@@ -5,6 +5,8 @@
 DATABASE_URL = "postgresql://USER:PASSWORD@localhost:5432/DATABASE_NAME"
 SECRET_KEY = "your-secret-key"
 ALLOWED_ORIGINS = "http://localhost:5173"
+RESEND_API_KEY="your-resend-api-key"
+RESEND_FROM_EMAIL="onboarding@resend.dev"
 
 [frontend]
 VITE_API_URL = "http://localhost:5173/api"
@@ -15,6 +17,8 @@ VITE_APP_NAME = "YourAppName"
 DATABASE_URL = "postgresql://USER:PASSWORD@host.docker.internal:5432/DATABASE_NAME"
 SECRET_KEY = "your-secret-key"
 ALLOWED_ORIGINS = "http://localhost"
+RESEND_API_KEY="your-resend-api-key"
+RESEND_FROM_EMAIL="onboarding@resend.dev"
 
 [frontend.docker]
 VITE_API_URL = "http://localhost/api"
