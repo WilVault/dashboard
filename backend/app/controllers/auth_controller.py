@@ -79,7 +79,9 @@ def register():
         full_name=result.get('full_name'),
         password_hash=password_hash,
         profile_url=result.get('profile_url'),
-        timezone=result.get('timezone')
+        profile_url_customized=result.get('profile_url_customized'),
+        timezone=result.get('timezone'),
+        currency_id=result.get('currency_id'),
     )
 
     if not person:
@@ -89,6 +91,7 @@ def register():
             status_code=500
         )
 
+    person = person_repository.get_person_by_id(person.person_id)
     token = generate_token(person.person_id, person.email)
 
     return api_response_format(
@@ -98,4 +101,31 @@ def register():
             'person': person.serialize()
         },
         status_code=201
+    )
+
+@auth_blueprint.route('/validate-email', methods=['POST'])
+def validate_email():
+    data = request.get_json()
+    email = data.get('email') if data else None
+
+    if not email:
+        return api_response_format(
+            message="Email is required",
+            data={},
+            status_code=400
+        )
+
+    existing = person_repository.find_by_email(email)
+
+    if existing:
+        return api_response_format(
+            message="Email already in use",
+            data={ 'exists': True },
+            status_code=409
+        )
+
+    return api_response_format(
+        message="Email is available",
+        data={ 'exists': False },
+        status_code=200
     )

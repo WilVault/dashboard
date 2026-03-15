@@ -64,13 +64,21 @@ def find_by_email(email: str) -> Optional[Person]:
         return None
     return Person.map(rows[0])
 
-def create_person(email: str, full_name: str, password_hash: str, profile_url: str, timezone: str) -> Optional[Person]:
+def create_person(
+        email: str,
+        full_name: str,
+        password_hash: str,
+        profile_url: str,
+        profile_url_customized: bool = False,
+        timezone: str = None,
+        currency_id: int = None
+    ) -> Optional[Person]:
     query = '''
-        INSERT INTO person (email, full_name, password_hash, profile_url, timezone)
-        VALUES (%s, %s, %s, %s, %s)
-        RETURNING id, email, full_name, profile_url, profile_url_customized, timezone;
+        INSERT INTO person (email, full_name, password_hash, profile_url, profile_url_customized, timezone, currency_id)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        RETURNING id, email, full_name, profile_url, profile_url_customized, timezone, currency_id;
     '''
-    rows = database.select_query(query, [email, full_name, password_hash, profile_url, timezone])
+    rows = database.select_query(query, [email, full_name, password_hash, profile_url, profile_url_customized, timezone, currency_id])
     if not rows:
         return None
     return Person.map(rows[0])

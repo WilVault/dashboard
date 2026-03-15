@@ -92,8 +92,10 @@ class LoginSchema(Schema):
 
 
 class RegisterSchema(Schema):
-    email = fields.Email(required=True)
-    password = fields.Str(required=True, validate=validate.Length(min=8))
-    full_name = fields.Str(required=True, validate=validate.Length(min=1))
-    profile_url = fields.Str(required=True, validate=validate.Length(min=1))
-    timezone = fields.Str(required=True, validate=validate.Length(min=1))
+    email                  = fields.Email(required=True)
+    password               = fields.Str(required=True, validate=validate.Length(min=8))
+    full_name              = fields.Str(required=True, validate=validate.Length(min=1))
+    profile_url            = fields.Str(required=True, validate=validate.Length(min=1))
+    profile_url_customized = fields.Bool(load_default=False)
+    timezone               = fields.Str(required=True, validate=validate.Length(min=1))
+    currency_id            = fields.Int(required=True)
