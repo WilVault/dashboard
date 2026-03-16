@@ -82,3 +82,20 @@ def create_person(
     if not rows:
         return None
     return Person.map(rows[0])
+
+def update_profile_url(email: str, profile_url: str, profile_url_customized: bool):
+    try:
+        database.execute(
+            """
+            UPDATE person
+            SET profile_url = %s,
+                profile_url_customized = %s,
+                updated_at = NOW()
+            WHERE email = %s
+            """,
+            (profile_url, profile_url_customized, email)
+        )
+        return True
+    except Exception as e:
+        print(f"update_profile_url error: {e}")
+        return False

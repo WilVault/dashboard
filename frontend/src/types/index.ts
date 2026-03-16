@@ -6,3 +6,10 @@ export interface Person {
     profileUrlCustomized: boolean;
     timezone: string;
 }
+
+export interface Currencies {
+    currencyId: number;
+    currency: string;
+    description: string;
+    emoji: string;
+}
