@@ -5,8 +5,14 @@
 DATABASE_URL = "postgresql://USER:PASSWORD@localhost:5432/DATABASE_NAME"
 SECRET_KEY = "your-secret-key"
 ALLOWED_ORIGINS = "http://localhost:5173"
+
 RESEND_API_KEY="your-resend-api-key"
 RESEND_FROM_EMAIL="onboarding@resend.dev"
+
+AWS_ACCESS_KEY_ID="YOUR-AWS-ACCESS-KEY-ID-S3-BUCKET"
+AWS_SECRET_ACCESS_KEY="YOUR-AWS-SECRET-ACCESS-KEY-S3-BUCKET"
+AWS_BUCKET_NAME="YOUR-AWS-BUCKET-NAME"
+AWS_REGION="YOUR-AWS-REGION"
 
 [frontend]
 VITE_API_URL = "http://localhost:5173/api"
@@ -17,8 +23,14 @@ VITE_APP_NAME = "YourAppName"
 DATABASE_URL = "postgresql://USER:PASSWORD@host.docker.internal:5432/DATABASE_NAME"
 SECRET_KEY = "your-secret-key"
 ALLOWED_ORIGINS = "http://localhost"
+
 RESEND_API_KEY="your-resend-api-key"
 RESEND_FROM_EMAIL="onboarding@resend.dev"
+
+AWS_ACCESS_KEY_ID="YOUR-AWS-ACCESS-KEY-ID-S3-BUCKET"
+AWS_SECRET_ACCESS_KEY="YOUR-AWS-SECRET-ACCESS-KEY-S3-BUCKET"
+AWS_BUCKET_NAME="YOUR-AWS-BUCKET-NAME"
+AWS_REGION="YOUR-AWS-REGION"
 
 [frontend.docker]
 VITE_API_URL = "http://localhost/api"
