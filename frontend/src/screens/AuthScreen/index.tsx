@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import constants from '../../constants';
 import { useSession } from '../../context/SessionContext';
 import {
-  WilvaultLogo,
-  GoogleLogo,
-  GithubLogo,
+  WilvaultLogo
 } from '../../icons';
 import Input from '../../components/Input';
 import PasswordInput from '../../components/PasswordInput';
@@ -558,7 +556,7 @@ export default function AuthScreen() {
   }, [state.otpCountdownStarted, state.otpCountdown]);
 
   useEffect(() => {
-    if (state.toggleContent == "SIGN IN" || state.toggleContent == 'SIGN UP') {
+    if (state.toggleContent === "SIGN IN" || state.toggleContent === 'SIGN UP') {
       dispatch({type: ACTION_TYPES.RESET_ALL_STATES });
     }
   }, [state.toggleContent])
@@ -624,7 +622,7 @@ export default function AuthScreen() {
     } finally {
       hide();
     }
-  }, [state.email, state.password, show, hide]);
+  }, [state.email, state.password, show, hide, navigate, refresh]);
 
   // const handleRegister = useCallback(async () => {});
   const handleValidateRegisterFields = useCallback(async () => {
@@ -692,7 +690,7 @@ export default function AuthScreen() {
 
   async function isEmailUsed(registerEmail: string): Promise<boolean> {
     try {
-      const res = await validateEmail(registerEmail);
+      await validateEmail(registerEmail);
       return false; // 200 = email is free
     } catch (err: any) {
       if (err?.response?.status === 409) {
