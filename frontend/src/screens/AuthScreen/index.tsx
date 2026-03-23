@@ -237,27 +237,6 @@ function LoginComponent({ state, dispatch, handleLogin }: LoginProps) {
         Sign in →
       </button>
 
-      <div className="flex items-center gap-4 mt-7">
-        <div className="flex-1 h-px bg-[#4A4A68]" />
-        <span className="text-[#4A4A68] text-xs">or continue with</span>
-        <div className="flex-1 h-px bg-[#4A4A68]" />
-      </div>
-
-      <div className='flex mt-5 gap-3'>
-        <button className='w-full py-3 bg-[#090911] text-black text-sm font-semibold rounded-lg transition-all cursor-pointer border border-[#4A4A68] hover:opacity-70'>
-          <div className='flex justify-center items-center gap-2'>
-            <GithubLogo width={15} height={15} />
-            <p className='text-white mt-0.5'>Github</p>
-          </div>
-        </button>
-        <button className='w-full py-3 bg-[#090911] text-black text-sm font-semibold rounded-lg transition-all cursor-pointer border border-[#4A4A68] hover:opacity-70'>
-          <div className='flex justify-center items-center gap-2'>
-            <GoogleLogo width={15} height={15} />
-            <p className='text-white mt-0.5'>Google</p>
-          </div>
-        </button>
-      </div>
-
       <p className='text-[#4A4A68] text-xs text-center mt-8 pb-3'>Don't have an account? <span onClick={() => dispatch({type: ACTION_TYPES.SET_TOGGLE_CONTENT, toggleContent: 'SIGN UP'})} className='text-[#C9FA30] cursor-pointer font-bold'>Create one free.</span></p>
 
     </div>
@@ -323,26 +302,6 @@ function RegisterComponent({ state, dispatch, handleValidateRegisterFields }: Re
         >
           Start now →
         </button>
-        <div className="flex items-center gap-4 mt-3  ">
-          <div className="flex-1 h-px bg-[#4A4A68]" />
-          <span className="text-[#4A4A68] text-xs">or continue with</span>
-          <div className="flex-1 h-px bg-[#4A4A68]" />
-        </div>
-
-        <div className='flex mt-5 gap-3'>
-          <button className='w-full py-3 bg-[#090911] text-black text-sm font-semibold rounded-lg transition-all cursor-pointer border border-[#4A4A68] hover:opacity-70'>
-            <div className='flex justify-center items-center gap-2'>
-              <GithubLogo width={15} height={15} />
-              <p className='text-white mt-0.5'>Github</p>
-            </div>
-          </button>
-          <button className='w-full py-3 bg-[#090911] text-black text-sm font-semibold rounded-lg transition-all cursor-pointer border border-[#4A4A68] hover:opacity-70'>
-            <div className='flex justify-center items-center gap-2'>
-              <GoogleLogo width={15} height={15} />
-              <p className='text-white mt-0.5'>Google</p>
-            </div>
-          </button>
-        </div>
       </div>
   </div>
 }
