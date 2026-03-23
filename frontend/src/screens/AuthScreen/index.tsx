@@ -392,6 +392,7 @@ function EmailVerificationComponent({ state, dispatch, show, hide }: EmailVerifi
 
       const avatarRes = await uploadDefaultAvatar(state.registerEmail, state.registerFullName);
       const profileUrl = (avatarRes.data as { data: { profile_url: string } }).data.profile_url;
+      const bustUrl = `${profileUrl}?t=${Date.now()}`;
 
       const registerRes = await register({
         email: state.registerEmail,
@@ -403,7 +404,7 @@ function EmailVerificationComponent({ state, dispatch, show, hide }: EmailVerifi
         currency_id: state.registerCurrencyId!,
       });
 
-      dispatch({ type: ACTION_TYPES.SET_REGISTER_PROFILE_URL, profileUrl });
+      dispatch({ type: ACTION_TYPES.SET_REGISTER_PROFILE_URL, profileUrl: bustUrl });
       dispatch({ type: ACTION_TYPES.SET_TOGGLE_CONTENT, toggleContent: 'PROFILE' });
 
     } catch {
@@ -484,8 +485,9 @@ function ProfileComponent({ state, dispatch, show, hide }: ProfileProps) {
 
       const res = await uploadCustomAvatar(formData);
       const newUrl = (res.data as { data: { profile_url: string } }).data.profile_url;
+      const bustUrl = `${newUrl}?t=${Date.now()}`;
 
-      dispatch({ type: ACTION_TYPES.SET_REGISTER_PROFILE_URL, profileUrl: newUrl });
+      dispatch({ type: ACTION_TYPES.SET_REGISTER_PROFILE_URL, profileUrl: bustUrl });
       toast.success('Photo uploaded!');
     } catch {
       toast.error('Failed to upload photo. Please try again.');
