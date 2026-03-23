@@ -351,7 +351,7 @@ function EmailVerificationComponent({ state, dispatch, show, hide }: EmailVerifi
       const profileUrl = (avatarRes.data as { data: { profile_url: string } }).data.profile_url;
       const bustUrl = `${profileUrl}?t=${Date.now()}`;
 
-      const registerRes = await register({
+      await register({
         email: state.registerEmail,
         password: state.registerPassword,
         full_name: state.registerFullName,
