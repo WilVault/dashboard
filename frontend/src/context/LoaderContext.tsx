@@ -45,7 +45,7 @@ function LoaderOverlay({ message }: { message: string }) {
             aria-live="polite"
             aria-label={message || 'Loading'}
             className="
-                fixed inset-0 z-[9999]
+                fixed inset-0 z-9999
                 flex flex-col items-center justify-center gap-4
                 bg-black/60 backdrop-blur-sm
                 animate-in fade-in duration-200
