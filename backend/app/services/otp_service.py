@@ -2,7 +2,7 @@
 import random
 import resend
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone as dt_timezone
 from zoneinfo import ZoneInfo
 
 
@@ -22,7 +22,9 @@ def is_otp_expired(expiration_at: datetime, timezone: str) -> bool:
     now = datetime.now(tz)
 
     if expiration_at.tzinfo is None:
-        expiration_at = expiration_at.replace(tzinfo=tz)
+       # expiration_at = expiration_at.replace(tzinfo=tz)
+       expiration_at = expiration_at.replace(tzinfo=dt_timezone.utc).astimezone(tz)
+
 
     return now > expiration_at
 
