@@ -24,8 +24,8 @@ export default function SideNav() {
   return (
     <nav className="
       flex flex-col h-screen bg-[#08080E] text-white overflow-y-auto sticky top-0
-      w-[64px] min-w-[64px]
-      lg:w-[280px] lg:min-w-[280px]
+      w-16 min-w-16
+      lg:w-70 lg:min-w-70
       transition-all duration-200
     ">
 
