@@ -11,6 +11,11 @@ import AuthScreen from './screens/AuthScreen';
 
 // Private screens
 import Dashboard from './screens/Dashboard';
+import Transactions from './screens/Transactions';
+import Budgets from './screens/Budgets';
+import Reports from './screens/Reports';
+import Accounts from './screens/Accounts';
+import Profile from './screens/Profile';
 
 function App() {
   return (
@@ -86,6 +91,12 @@ function App() {
             >
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />
+              <Route path="transactions" element={<Transactions />} />
+              <Route path="budgets" element={<Budgets />} />
+              <Route path="reports" element={<Reports />} />
+              <Route path="accounts" element={<Accounts />} />
+              <Route path="profile" element={<Profile />} />
+
               {/* <Route path="settings" element={<Settings />} /> */}
               {/* <Route path="profile" element={<Profile />} /> */}
             </Route>

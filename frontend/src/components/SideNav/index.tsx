@@ -1,63 +1,88 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useSession } from '../../context/SessionContext';
+import {
+  DashboardLogo,
+  TransactionLogo,
+  BudgetsLogo,
+  ReportsLogo,
+  AccountsLogo,
+} from '../../icons';
+import './styles.css';
 
-interface NavItem {
-  label: string;
-  path:  string;
-  icon:  string;
-}
-
-// Add new nav links here as you build more screens
-const navItems: NavItem[] = [
-  { label: 'Dashboard', path: '/dashboard', icon: '🏠' },
-  { label: 'Terminals', path: '/terminals', icon: '🖥️' },
-  { label: 'Payments',  path: '/payments',  icon: '💳' },
+const navItems = [
+  { label: 'Dashboard', path: '/dashboard', icon: <DashboardLogo width={19} height={19} className='filter-green'/> },
+  { label: 'Transactions', path: '/transactions', icon: <TransactionLogo width={19} height={19} className='filter-green'/> },
+  { label: 'Budgets', path: '/budgets', icon: <BudgetsLogo width={19} height={19} className='filter-green'/>},
+  { label: 'Reports', path: '/reports', icon: <ReportsLogo width={19} height={19} className='filter-green'/>},
+  { label: 'Accounts', path: '/accounts', icon: <AccountsLogo width={19} height={19} className='filter-green'/>},
 ];
 
 export default function SideNav() {
-  const { person, logout } = useSession();
+  const { person } = useSession();
+  const navigate = useNavigate();
 
   return (
-    <nav className="flex flex-col w-60 min-w-60 h-screen bg-gray-900 text-white overflow-y-auto">
+    <nav className="
+      flex flex-col h-screen bg-[#08080E] text-white overflow-y-auto sticky top-0
+      w-[64px] min-w-[64px]
+      lg:w-[280px] lg:min-w-[280px]
+      transition-all duration-200
+    ">
 
       {/* Header */}
-      <div className="px-5 py-6 border-b border-white/10">
-        <span className="text-lg font-bold">⚡ MyApp</span>
+      <div className="border-b border-white/10 flex items-center justify-center lg:justify-start px-0 lg:px-5 py-6">
+        {/* Icon-only: "W" monogram on collapsed rail */}
+        <span className="lg:hidden text-xl font-bold text-[#C9FA30]">W</span>
+        {/* Full wordmark on desktop */}
+        <div className="hidden lg:block">
+          <span className="text-2xl font-bold text-[#C9FA30]">WILVAULT</span>
+          <br />
+          <span className='text-xs text-[#4A4A68]'>PERSONAL FINANCE</span>
+        </div>
       </div>
 
       {/* Nav links */}
-      <ul className="flex-1 py-3 space-y-0.5 list-none m-0 p-3">
+      <ul className="flex-1 py-3 space-y-0.5 list-none m-0 p-2 lg:p-3">
         {navItems.map(item => (
           <li key={item.path}>
             <NavLink
               to={item.path}
+              title={item.label}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-colors duration-150 no-underline
+                `flex items-center justify-center lg:justify-start gap-3
+                 px-0 lg:px-5 py-3.5 rounded-lg text-sm transition-colors duration-150 no-underline
                 ${isActive
-                  ? 'bg-white/10 text-white font-semibold border-l-4 border-indigo-500 pl-3'
+                  ? 'bg-[#2a3207] text-[#C9FA30] font-semibold'
                   : 'text-white/60 hover:bg-white/8 hover:text-white'
                 }`
               }
             >
-              <span className="w-5 text-center text-base">{item.icon}</span>
-              <span>{item.label}</span>
+              <span className="shrink-0">{item.icon}</span>
+              {/* Label only on desktop */}
+              <span className="hidden lg:inline">{item.label}</span>
             </NavLink>
           </li>
         ))}
       </ul>
 
-      {/* Footer */}
-      <div className="px-5 py-4 border-t border-white/10">
-        <div className="flex flex-col mb-3">
+      {/* Footer / Profile */}
+      <div
+        onClick={() => navigate('/profile')}
+        className="border-t border-white/10 hover:bg-white/8 cursor-pointer
+                   flex items-center justify-center lg:justify-start
+                   px-0 lg:px-5 py-4"
+      >
+        <img
+          src={person?.profileUrl}
+          alt={person?.fullName}
+          title={person?.fullName}
+          className='w-9 h-9 rounded-full shrink-0'
+        />
+        {/* Name + timezone only on desktop */}
+        <div className="hidden lg:flex flex-col ml-2">
           <span className="text-sm font-semibold text-white">{person?.fullName}</span>
           <span className="text-xs text-white/50 capitalize">{person?.timezone}</span>
         </div>
-        <button
-          onClick={logout}
-          className="w-full py-2 text-sm text-white bg-white/8 border border-white/20 rounded-md cursor-pointer transition-colors duration-150 hover:bg-white/15"
-        >
-          Logout
-        </button>
       </div>
 
     </nav>
