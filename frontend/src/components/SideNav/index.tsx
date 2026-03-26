@@ -6,6 +6,7 @@ import {
   BudgetsLogo,
   ReportsLogo,
   AccountsLogo,
+  WilvaultLogo
 } from '../../icons';
 import './styles.css';
 
@@ -32,7 +33,9 @@ export default function SideNav() {
       {/* Header */}
       <div className="border-b border-white/10 flex items-center justify-center lg:justify-start px-0 lg:px-5 py-6">
         {/* Icon-only: "W" monogram on collapsed rail */}
-        <span className="lg:hidden text-xl font-bold text-[#C9FA30]">W</span>
+        <span className="lg:hidden text-xl font-bold text-[#C9FA30]">
+          <WilvaultLogo width={40} height={40} />
+        </span>
         {/* Full wordmark on desktop */}
         <div className="hidden lg:block">
           <span className="text-2xl font-bold text-[#C9FA30]">WILVAULT</span>
