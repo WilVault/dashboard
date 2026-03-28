@@ -8,22 +8,12 @@ from app.utilities.api_response_format import api_response_format
 from app.utilities.auth import jwt_required
 
 # Hardcoded IDs — match your seeded transaction_type and transaction_categories rows
-TRANSFER_TYPE_ID = 3  # 'transfer'    in transaction_type
+TRANSFER_TYPE_ID    = 3  # 'transfer'    in transaction_type
 TRANSFER_CATEGORY_ID = 10  # 'Transfer' in transaction_categories
 
 transaction_blueprint = Blueprint('transactions', __name__)
 
-'''
-    How to use params for GET /transactions
-    /transactions?
-        transaction_type=expense&
-        transaction_category=Food&
-        title=lunch&
-        date_from=2026-01-01&date_to=2026-03-27&
-        page=1&page_size=20&
-        account_name=Chinabank Savings
 
-'''
 @transaction_blueprint.route('/transactions', methods=['GET'])
 @jwt_required
 def get_transactions():
@@ -145,6 +135,7 @@ def create_transaction():
             amount                  = result.get('amount'),
             title                   = result.get('title'),
             description             = result.get('description'),
+            transaction_date        = str(result.get('transaction_date')) if result.get('transaction_date') else None,
         )
 
         if not transaction:
@@ -219,10 +210,10 @@ def create_transfer():
 @transaction_blueprint.route('/transaction-categories', methods=['GET'])
 def get_transaction_categories():
     try:
-        categories = transaction_repository.get_all_transaction_categories()
+        rows = database.select_query('SELECT id, label, icon FROM transaction_categories ORDER BY id;')
         return api_response_format(
             message="Transaction categories retrieved successfully",
-            data={ 'categories': [c.serialize() for c in categories] },
+            data={ 'categories': rows },
             status_code=200
         )
     except Exception as e:
@@ -232,10 +223,10 @@ def get_transaction_categories():
 @transaction_blueprint.route('/transaction-types', methods=['GET'])
 def get_transaction_types():
     try:
-        types = transaction_repository.get_all_transaction_types()
+        rows = database.select_query('SELECT id, label, description FROM transaction_type ORDER BY id;')
         return api_response_format(
             message="Transaction types retrieved successfully",
-            data={ 'types': [t.serialize() for t in types] },
+            data={ 'types': rows },
             status_code=200
         )
     except Exception as e:

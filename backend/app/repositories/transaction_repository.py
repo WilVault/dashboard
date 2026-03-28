@@ -34,16 +34,16 @@ def get_transactions_by_person_id(
         params.append(f'%{title}%')
 
     if date_from:
-        conditions.append('t.created_at >= %s')
+        conditions.append('t.transaction_date >= %s')
         params.append(date_from)
 
     if date_to:
-        conditions.append('t.created_at < (%s::date + INTERVAL \'1 day\')')
+        conditions.append('t.transaction_date < (%s::date + INTERVAL \'1 day\')')
         params.append(date_to)
 
     if account_name:
-        conditions.append('LOWER(a.account_name) ILIKE LOWER(%s)')
-        params.append(f'%{account_name}%')
+        conditions.append('LOWER(a.account_name) = LOWER(%s)')
+        params.append(account_name)
 
     where_clause = 'WHERE ' + ' AND '.join(conditions)
 
@@ -84,11 +84,12 @@ def get_transactions_by_person_id(
     )
     total_income   = summary_rows[0]['total_income']   if summary_rows else 0
     total_expenses = summary_rows[0]['total_expenses'] if summary_rows else 0
+
+    # snake case is intentional since frontend expect snake case also...
     summary = {
-        # i used snake case here since we are gonna consume this api thru javascript hehe..
         'totalIncome':   str(total_income),
         'totalExpenses': str(total_expenses),
-        'net':            str(total_income - total_expenses),
+        'net':           str(total_income - total_expenses),
     }
 
     # paginated results
@@ -103,11 +104,11 @@ def get_transactions_by_person_id(
             t.title,
             t.description,
             t.transfer_ref_id,
+            t.transaction_date,
             t.created_at,
             t.updated_at,
             t.transaction_type_id,
             tt.label    AS transaction_type,
-            tt.description AS transaction_type_description,
             t.transaction_category_id,
             tc.label    AS transaction_category,
             tc.icon     AS transaction_category_icon
@@ -136,6 +137,7 @@ def get_transactions_by_account_id(account_id: int) -> list[Transaction]:
             t.title,
             t.description,
             t.transfer_ref_id,
+            t.transaction_date,
             t.created_at,
             t.updated_at,
             t.transaction_type_id,
@@ -166,6 +168,7 @@ def get_transaction_by_id(transaction_id: int) -> Optional[Transaction]:
             t.title,
             t.description,
             t.transfer_ref_id,
+            t.transaction_date,
             t.created_at,
             t.updated_at,
             t.transaction_type_id,
@@ -195,6 +198,7 @@ def create_transaction(
         title: str,
         description: str = None,
         transfer_ref_id: str = None,
+        transaction_date: str = None,
     ) -> Optional[Transaction]:
     query = '''
         INSERT INTO transaction (
@@ -204,9 +208,10 @@ def create_transaction(
             amount,
             title,
             description,
-            transfer_ref_id
+            transfer_ref_id,
+            transaction_date
         )
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         RETURNING id;
     '''
     rows = database.select_query(query, [
@@ -217,6 +222,7 @@ def create_transaction(
         title,
         description,
         transfer_ref_id,
+        transaction_date,
     ])
     if not rows:
         return None
@@ -263,12 +269,13 @@ def create_transfer(
     credit = get_transaction_by_id(rows[1]['id'])
     return debit, credit
 
-
-def get_all_transaction_categories() -> list[TransactionCategory]:
+def get_all_transaction_categories() -> list:
     rows = database.select_query('SELECT id, label, icon FROM transaction_categories ORDER BY id;')
+    from app.models.transaction_model import TransactionCategory
     return [TransactionCategory.map(r) for r in rows]
 
 
-def get_all_transaction_types() -> list[TransactionType]:
+def get_all_transaction_types() -> list:
     rows = database.select_query('SELECT id, label, description FROM transaction_type ORDER BY id;')
+    from app.models.transaction_model import TransactionType
     return [TransactionType.map(r) for r in rows]

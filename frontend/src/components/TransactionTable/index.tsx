@@ -79,7 +79,7 @@ export default function TransactionTable({ transactions, pagination, currency, o
                 <p className="text-[#888] text-sm">{t.accountName}</p>
 
                 {/* Date */}
-                <p className="text-[#888] text-sm">{formatDate(t.createdAt)}</p>
+                <p className="text-[#888] text-sm">{formatDate(t.transactionDate)}</p>
 
                 {/* Amount */}
                 <p className={`text-sm font-bold text-right ${isPositive ? 'text-[#C9FA30]' : 'text-[#FF4D4D]'}`}>

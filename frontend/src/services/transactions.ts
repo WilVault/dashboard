@@ -29,6 +29,7 @@ export function createTransaction(data: {
   amount:                  number;
   title:                   string;
   description?:            string;
+  transaction_date?:       string;
 }) {
   return api.post('/transactions', data);
 }

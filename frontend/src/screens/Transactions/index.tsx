@@ -6,6 +6,7 @@ import { useSession } from '../../context/SessionContext';
 import { formatAmount } from '../../utilities';
 import RangePicker from '../../components/RangePicker';
 import TransactionTable from '../../components/TransactionTable';
+import AddTransactionModal from '../../components/AddTransactionModal';
 import type { DateRange } from '../../components/RangePicker';
 
 const ACTION_TYPES = {
@@ -95,6 +96,7 @@ export default function Transactions() {
   const { show, hide } = useLoader();
   const { person } = useSession();
   const [searchInput, setSearchInput] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
   const fetchTransactions = useCallback(async () => {
     dispatch({ type: ACTION_TYPES.SET_ERROR, error: null });
@@ -106,6 +108,8 @@ export default function Transactions() {
 
       const res = await getTransactions(activeFilters);
       const data = (res.data as any).data;
+
+      console.log('transactions response:', data);
 
       dispatch({ type: ACTION_TYPES.SET_TRANSACTIONS, transactions: data.transactions });
       dispatch({
@@ -126,20 +130,28 @@ export default function Transactions() {
   }, [state.filters]);
 
   const fetchLookups = useCallback(async () => {
-    try {
-      const [accountsRes, categoriesRes, typesRes] = await Promise.all([
-        getAccounts(),
-        getTransactionCategories(),
-        getTransactionTypes(),
-      ]);
+      try {
+        const [accountsRes, categoriesRes, typesRes] = await Promise.all([
+          getAccounts(),
+          getTransactionCategories(),
+          getTransactionTypes(),
+        ]);
 
-      dispatch({ type: ACTION_TYPES.SET_ACCOUNTS,               accounts:              (accountsRes.data   as any).data.accounts });
-      dispatch({ type: ACTION_TYPES.SET_TRANSACTION_CATEGORIES, transactionCategories: (categoriesRes.data as any).data.categories });
-      dispatch({ type: ACTION_TYPES.SET_TRANSACTION_TYPES,      transactionTypes:      (typesRes.data      as any).data.types });
-    } catch (err) {
-      console.error('fetchLookups error:', err);
-    }
-  }, []);
+        const accounts   = (accountsRes.data   as any).data.accounts;
+        const categories = (categoriesRes.data as any).data.categories;
+        const types      = (typesRes.data      as any).data.types;
+
+        console.log('accounts:', accounts);        // 👈 add this
+        console.log('categories:', categories);    // 👈 add this
+        console.log('types:', types);              // 👈 add this
+
+        dispatch({ type: ACTION_TYPES.SET_ACCOUNTS,               accounts });
+        dispatch({ type: ACTION_TYPES.SET_TRANSACTION_CATEGORIES, transactionCategories: categories });
+        dispatch({ type: ACTION_TYPES.SET_TRANSACTION_TYPES,      transactionTypes:      types });
+      } catch (err) {
+        console.error('fetchLookups error:', err);
+      }
+    }, []);
 
   useEffect(() => {
     Promise.all([fetchTransactions(), fetchLookups()]);
@@ -149,7 +161,6 @@ export default function Transactions() {
     fetchTransactions();
   }, [state.filters]);
 
-  // debounce search → title filter
   useEffect(() => {
     const timer = setTimeout(() => {
       dispatch({ type: ACTION_TYPES.SET_FILTERS, filters: { title: searchInput } });
@@ -191,7 +202,7 @@ export default function Transactions() {
           <p className="text-[#4A4A68] text-sm mt-1">All time</p>
         </div>
         <button
-          onClick={() => console.log('Add Transaction clicked')}
+          onClick={() => setShowModal(true)}
           className="bg-[#C9FA30] text-black text-sm font-bold px-5 py-3 rounded-xl cursor-pointer hover:opacity-70 transition-opacity mt-5 sm:mt-0"
         >
           + Add Transaction
@@ -222,8 +233,6 @@ export default function Transactions() {
 
       {/* Filters */}
       <div className="bg-[#0C0C17] border border-[#1a1a2e] rounded-2xl p-4 mb-6">
-
-        {/* Type pills */}
         <div className="flex items-center gap-2 mb-4 flex-wrap">
           {TYPE_PILLS.map(pill => {
             const isActive = state.filters.transactionType === pill.value;
@@ -242,8 +251,6 @@ export default function Transactions() {
             );
           })}
         </div>
-
-        {/* Second row */}
         <div className="flex items-center gap-3 flex-wrap">
           <RangePicker
             value={dateRangeValue}
@@ -255,12 +262,12 @@ export default function Transactions() {
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
             placeholder="Search..."
-            className="bg-[#07070f] border border-[#1a1a2e] text-white text-sm px-4 py-1.75 rounded-[9px] placeholder-[#4A4A68] focus:outline-none focus:border-[#4A4A68] transition-colors"
+            className="bg-[#07070f] border border-[#1a1a2e] text-white text-sm px-4 py-[7px] rounded-[9px] placeholder-[#4A4A68] focus:outline-none focus:border-[#4A4A68] transition-colors"
           />
           <select
             value={state.filters.accountName}
             onChange={e => dispatch({ type: ACTION_TYPES.SET_FILTERS, filters: { accountName: e.target.value } })}
-            className="bg-[#07070f] border border-[#1a1a2e] text-white text-sm px-4 py-1.75 rounded-[9px] focus:outline-none focus:border-[#4A4A68] transition-colors cursor-pointer"
+            className="bg-[#07070f] border border-[#1a1a2e] text-white text-sm px-4 py-[7px] rounded-[9px] focus:outline-none focus:border-[#4A4A68] transition-colors cursor-pointer"
           >
             <option value="">All Accounts</option>
             {state.accounts.map((acc: any) => (
@@ -270,7 +277,7 @@ export default function Transactions() {
           <select
             value={state.filters.transactionCategory}
             onChange={e => dispatch({ type: ACTION_TYPES.SET_FILTERS, filters: { transactionCategory: e.target.value } })}
-            className="bg-[#07070f] border border-[#1a1a2e] text-white text-sm px-4 py-1.75 rounded-[9px] focus:outline-none focus:border-[#4A4A68] transition-colors cursor-pointer"
+            className="bg-[#07070f] border border-[#1a1a2e] text-white text-sm px-4 py-[7px] rounded-[9px] focus:outline-none focus:border-[#4A4A68] transition-colors cursor-pointer"
           >
             <option value="">All Categories</option>
             {state.transactionCategories.map((cat: any) => (
@@ -287,6 +294,19 @@ export default function Transactions() {
         currency={currency}
         onPageChange={handlePageChange}
       />
+
+      {/* Add Transaction Modal */}
+      {showModal && (
+        <AddTransactionModal
+          accounts={state.accounts}
+          transactionCategories={state.transactionCategories}
+          onClose={() => setShowModal(false)}
+          onSuccess={() => {
+            setShowModal(false);
+            fetchTransactions();
+          }}
+        />
+      )}
 
     </div>
   );

@@ -12,27 +12,21 @@ class TransactionType:
 
     @staticmethod
     def map(row: dict):
-        if not row:
-            return None
         t = TransactionType()
         t.transaction_type_id = row.get("id")
-        t.label = row.get("label")
-        t.description = row.get('description')
+        t.label               = row.get("label")
+        t.description         = row.get("description")
         return t
-
-    def serialize(self) -> dict:
-        return TransactionTypeSchema().dump(self)
 
 
 class TransactionTypeSchema(Schema):
     transactionTypeId = fields.Int(attribute='transaction_type_id')
-    label = fields.Str()
-    description = fields.Str()
+    label             = fields.Str()
+    description       = fields.Str(allow_none=True)
 
     class Meta:
         fields = ('transactionTypeId', 'label', 'description')
         ordered = True
-
 
 class TransactionCategory:
     def __init__(self):
@@ -75,6 +69,7 @@ class Transaction:
         self.title: str = None
         self.description: Optional[str] = None
         self.transfer_ref_id: Optional[str] = None
+        self.transaction_date: Optional[str] = None
         self.created_at: Optional[datetime] = None
         self.updated_at: Optional[datetime] = None
 
@@ -84,21 +79,21 @@ class Transaction:
             return None
 
         t = Transaction()
-        t.transaction_id  = row.get("id")
-        t.account_id      = row.get("account_id")
-        t.account_name    = row.get("account_name")
-        t.amount          = row.get("amount")
-        t.title           = row.get("title")
-        t.description     = row.get("description")
-        t.transfer_ref_id = row.get("transfer_ref_id")
-        t.created_at      = row.get("created_at")
-        t.updated_at      = row.get("updated_at")
+        t.transaction_id   = row.get("id")
+        t.account_id       = row.get("account_id")
+        t.account_name     = row.get("account_name")
+        t.amount           = row.get("amount")
+        t.title            = row.get("title")
+        t.description      = row.get("description")
+        t.transfer_ref_id  = row.get("transfer_ref_id")
+        t.transaction_date = str(row.get("transaction_date")) if row.get("transaction_date") else None
+        t.created_at       = row.get("created_at")
+        t.updated_at       = row.get("updated_at")
 
         if row.get("transaction_type"):
             t.transaction_type = TransactionType.map({
                 "id":    row.get("transaction_type_id"),
                 "label": row.get("transaction_type"),
-                "description": row.get("transaction_type_description"),
             })
 
         if row.get("transaction_category"):
@@ -140,6 +135,7 @@ class TransactionSchema(Schema):
     title               = fields.Str()
     description         = fields.Str(allow_none=True)
     transferRefId       = fields.Str(attribute='transfer_ref_id', allow_none=True)
+    transactionDate     = fields.Str(attribute='transaction_date', allow_none=True)
     createdAt           = fields.DateTime(attribute='created_at')
     updatedAt           = fields.DateTime(attribute='updated_at')
 
@@ -154,6 +150,7 @@ class TransactionSchema(Schema):
             'title',
             'description',
             'transferRefId',
+            'transactionDate',
             'createdAt',
             'updatedAt',
         )
@@ -168,6 +165,7 @@ class CreateTransactionSchema(Schema):
     amount                  = fields.Decimal(required=True)
     title                   = fields.Str(required=True, validate=validate.Length(min=1))
     description             = fields.Str(load_default=None)
+    transaction_date        = fields.Date(load_default=None)  # YYYY-MM-DD, defaults to today if not provided
 
 
 class CreateTransferSchema(Schema):
@@ -182,5 +180,3 @@ class CreateTransferSchema(Schema):
     def validate_different_accounts(self, data, **kwargs):
         if data.get('from_account_id') == data.get('to_account_id'):
             raise ValidationError("from_account_id and to_account_id must be different.")
-
-
