@@ -40,6 +40,7 @@ export default function Dashboard() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
+    console.log(person)
     const fetchData = async () => {
       dispatch({ type: ACTION_TYPES.SET_LOADING });
       try {

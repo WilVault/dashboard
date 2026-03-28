@@ -28,6 +28,7 @@ export default function SideNav() {
       w-16 min-w-16
       lg:w-70 lg:min-w-70
       transition-all duration-200
+      border-r border-white/10
     ">
 
       {/* Header */}
