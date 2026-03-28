@@ -234,7 +234,7 @@ export default function RangePicker({ value, onChange, placeholder = 'All time' 
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
-        className="flex items-center gap-2 text-[11px] px-3 py-[7px] rounded-[9px] transition-all"
+        className="flex items-center gap-2 text-[11px] px-3 py-1.75 rounded-[9px] transition-all"
         style={{
           background:     hasRange ? '#1a2000' : 'transparent',
           border:         `1px solid ${hasRange ? G.accent : G.border}`,

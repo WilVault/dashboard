@@ -255,12 +255,12 @@ export default function Transactions() {
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
             placeholder="Search..."
-            className="bg-[#07070f] border border-[#1a1a2e] text-white text-sm px-4 py-[7px] rounded-[9px] placeholder-[#4A4A68] focus:outline-none focus:border-[#4A4A68] transition-colors"
+            className="bg-[#07070f] border border-[#1a1a2e] text-white text-sm px-4 py-1.75 rounded-[9px] placeholder-[#4A4A68] focus:outline-none focus:border-[#4A4A68] transition-colors"
           />
           <select
             value={state.filters.accountName}
             onChange={e => dispatch({ type: ACTION_TYPES.SET_FILTERS, filters: { accountName: e.target.value } })}
-            className="bg-[#07070f] border border-[#1a1a2e] text-white text-sm px-4 py-[7px] rounded-[9px] focus:outline-none focus:border-[#4A4A68] transition-colors cursor-pointer"
+            className="bg-[#07070f] border border-[#1a1a2e] text-white text-sm px-4 py-1.75 rounded-[9px] focus:outline-none focus:border-[#4A4A68] transition-colors cursor-pointer"
           >
             <option value="">All Accounts</option>
             {state.accounts.map((acc: any) => (
@@ -270,7 +270,7 @@ export default function Transactions() {
           <select
             value={state.filters.transactionCategory}
             onChange={e => dispatch({ type: ACTION_TYPES.SET_FILTERS, filters: { transactionCategory: e.target.value } })}
-            className="bg-[#07070f] border border-[#1a1a2e] text-white text-sm px-4 py-[7px] rounded-[9px] focus:outline-none focus:border-[#4A4A68] transition-colors cursor-pointer"
+            className="bg-[#07070f] border border-[#1a1a2e] text-white text-sm px-4 py-1.75 rounded-[9px] focus:outline-none focus:border-[#4A4A68] transition-colors cursor-pointer"
           >
             <option value="">All Categories</option>
             {state.transactionCategories.map((cat: any) => (
