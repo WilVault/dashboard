@@ -178,6 +178,16 @@ def create_transfer():
         if from_account.person_id != person_id or to_account.person_id != person_id:
             return api_response_format(message="Forbidden", data={}, status_code=403)
 
+        # Balance check — from account must have sufficient funds
+        from_balance = account_repository.get_account_balance(from_account_id)
+        transfer_amount = float(result.get('amount'))
+        if transfer_amount > from_balance:
+            return api_response_format(
+                message=f"Insufficient balance to make transfer",
+                data={},
+                status_code=400
+            )
+
         transfer_ref_id = str(uuid.uuid4())
 
         debit, credit = transaction_repository.create_transfer(

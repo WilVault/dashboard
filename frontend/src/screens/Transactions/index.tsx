@@ -7,6 +7,7 @@ import { formatAmount } from '../../utilities';
 import RangePicker from '../../components/RangePicker';
 import TransactionTable from '../../components/TransactionTable';
 import AddTransactionModal from '../../components/AddTransactionModal';
+import TransactionDetailModal from '../../components/TransactionDetailModal';
 import type { DateRange } from '../../components/RangePicker';
 
 const ACTION_TYPES = {
@@ -97,6 +98,7 @@ export default function Transactions() {
   const { person } = useSession();
   const [searchInput, setSearchInput] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
 
   const fetchTransactions = useCallback(async () => {
     dispatch({ type: ACTION_TYPES.SET_ERROR, error: null });
@@ -108,8 +110,6 @@ export default function Transactions() {
 
       const res = await getTransactions(activeFilters);
       const data = (res.data as any).data;
-
-      console.log('transactions response:', data);
 
       dispatch({ type: ACTION_TYPES.SET_TRANSACTIONS, transactions: data.transactions });
       dispatch({
@@ -130,28 +130,19 @@ export default function Transactions() {
   }, [state.filters]);
 
   const fetchLookups = useCallback(async () => {
-      try {
-        const [accountsRes, categoriesRes, typesRes] = await Promise.all([
-          getAccounts(),
-          getTransactionCategories(),
-          getTransactionTypes(),
-        ]);
-
-        const accounts   = (accountsRes.data   as any).data.accounts;
-        const categories = (categoriesRes.data as any).data.categories;
-        const types      = (typesRes.data      as any).data.types;
-
-        console.log('accounts:', accounts);        // 👈 add this
-        console.log('categories:', categories);    // 👈 add this
-        console.log('types:', types);              // 👈 add this
-
-        dispatch({ type: ACTION_TYPES.SET_ACCOUNTS,               accounts });
-        dispatch({ type: ACTION_TYPES.SET_TRANSACTION_CATEGORIES, transactionCategories: categories });
-        dispatch({ type: ACTION_TYPES.SET_TRANSACTION_TYPES,      transactionTypes:      types });
-      } catch (err) {
-        console.error('fetchLookups error:', err);
-      }
-    }, []);
+    try {
+      const [accountsRes, categoriesRes, typesRes] = await Promise.all([
+        getAccounts(),
+        getTransactionCategories(),
+        getTransactionTypes(),
+      ]);
+      dispatch({ type: ACTION_TYPES.SET_ACCOUNTS,               accounts:              (accountsRes.data   as any).data.accounts });
+      dispatch({ type: ACTION_TYPES.SET_TRANSACTION_CATEGORIES, transactionCategories: (categoriesRes.data as any).data.categories });
+      dispatch({ type: ACTION_TYPES.SET_TRANSACTION_TYPES,      transactionTypes:      (typesRes.data      as any).data.types });
+    } catch (err) {
+      console.error('fetchLookups error:', err);
+    }
+  }, []);
 
   useEffect(() => {
     Promise.all([fetchTransactions(), fetchLookups()]);
@@ -161,15 +152,16 @@ export default function Transactions() {
     fetchTransactions();
   }, [state.filters]);
 
+  // debounce search → title filter, reset page to 1
   useEffect(() => {
     const timer = setTimeout(() => {
-      dispatch({ type: ACTION_TYPES.SET_FILTERS, filters: { title: searchInput } });
+      dispatch({ type: ACTION_TYPES.SET_FILTERS, filters: { title: searchInput, page: 1 } });
     }, 400);
     return () => clearTimeout(timer);
   }, [searchInput]);
 
   const handleTypePill = (value: string) => {
-    dispatch({ type: ACTION_TYPES.SET_FILTERS, filters: { transactionType: value } });
+    dispatch({ type: ACTION_TYPES.SET_FILTERS, filters: { transactionType: value, page: 1 } });
   };
 
   const handleDateRange = (range: DateRange | undefined) => {
@@ -178,6 +170,7 @@ export default function Transactions() {
       filters: {
         dateFrom: range?.dateFrom ?? '',
         dateTo:   range?.dateTo   ?? '',
+        page:     1,
       },
     });
   };
@@ -262,12 +255,12 @@ export default function Transactions() {
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
             placeholder="Search..."
-            className="bg-[#07070f] border border-[#1a1a2e] text-white text-sm px-4 py-[7px] rounded-[9px] placeholder-[#4A4A68] focus:outline-none focus:border-[#4A4A68] transition-colors"
+            className="bg-[#07070f] border border-[#1a1a2e] text-white text-sm px-4 py-1.75 rounded-[9px] placeholder-[#4A4A68] focus:outline-none focus:border-[#4A4A68] transition-colors"
           />
           <select
             value={state.filters.accountName}
-            onChange={e => dispatch({ type: ACTION_TYPES.SET_FILTERS, filters: { accountName: e.target.value } })}
-            className="bg-[#07070f] border border-[#1a1a2e] text-white text-sm px-4 py-[7px] rounded-[9px] focus:outline-none focus:border-[#4A4A68] transition-colors cursor-pointer"
+            onChange={e => dispatch({ type: ACTION_TYPES.SET_FILTERS, filters: { accountName: e.target.value, page: 1 } })}
+            className="bg-[#07070f] border border-[#1a1a2e] text-white text-sm px-4 py-1.75 rounded-[9px] focus:outline-none focus:border-[#4A4A68] transition-colors cursor-pointer"
           >
             <option value="">All Accounts</option>
             {state.accounts.map((acc: any) => (
@@ -276,8 +269,8 @@ export default function Transactions() {
           </select>
           <select
             value={state.filters.transactionCategory}
-            onChange={e => dispatch({ type: ACTION_TYPES.SET_FILTERS, filters: { transactionCategory: e.target.value } })}
-            className="bg-[#07070f] border border-[#1a1a2e] text-white text-sm px-4 py-[7px] rounded-[9px] focus:outline-none focus:border-[#4A4A68] transition-colors cursor-pointer"
+            onChange={e => dispatch({ type: ACTION_TYPES.SET_FILTERS, filters: { transactionCategory: e.target.value, page: 1 } })}
+            className="bg-[#07070f] border border-[#1a1a2e] text-white text-sm px-4 py-1.75 rounded-[9px] focus:outline-none focus:border-[#4A4A68] transition-colors cursor-pointer"
           >
             <option value="">All Categories</option>
             {state.transactionCategories.map((cat: any) => (
@@ -293,13 +286,24 @@ export default function Transactions() {
         pagination={state.pagination}
         currency={currency}
         onPageChange={handlePageChange}
+        onRowClick={t => setSelectedTransaction(t)}
       />
+
+      {/* Transaction Detail Modal */}
+      {selectedTransaction && (
+        <TransactionDetailModal
+          transaction={selectedTransaction}
+          currency={currency}
+          onClose={() => setSelectedTransaction(null)}
+        />
+      )}
 
       {/* Add Transaction Modal */}
       {showModal && (
         <AddTransactionModal
           accounts={state.accounts}
           transactionCategories={state.transactionCategories}
+          totalIncomeBalance={state.summary.totalIncome}
           onClose={() => setShowModal(false)}
           onSuccess={() => {
             setShowModal(false);

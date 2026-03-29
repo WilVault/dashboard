@@ -89,3 +89,15 @@ def create_account(
     )
 
     return get_account_by_id(account_id)
+
+
+def get_account_balance(account_id: int) -> float:
+    rows = database.select_query(
+        '''
+        SELECT COALESCE(SUM(amount), 0) AS balance
+        FROM transaction
+        WHERE account_id = %s;
+        ''',
+        [account_id]
+    )
+    return float(rows[0]['balance']) if rows else 0.0

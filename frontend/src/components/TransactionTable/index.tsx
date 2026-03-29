@@ -8,11 +8,13 @@ interface TransactionTableProps {
     page_size: number;
     pages:     number;
   };
-  currency: string;
+  currency:     string;
   onPageChange: (page: number) => void;
+  onRowClick:   (transaction: any) => void;
 }
 
 function formatDate(iso: string): string {
+  if (!iso) return '—';
   return new Date(iso).toLocaleDateString('en-PH', {
     month: 'short',
     day:   'numeric',
@@ -21,12 +23,15 @@ function formatDate(iso: string): string {
 }
 
 function CategoryBadge({ label, typeLabel }: { label: string; typeLabel: string }) {
-  const isIncome = ['income', 'initial_balance'].includes(typeLabel?.toLowerCase());
+  const isIncome   = ['income', 'initial_balance'].includes(typeLabel?.toLowerCase());
+  const isTransfer = typeLabel?.toLowerCase() === 'transfer';
   return (
     <span
       className={`text-xs font-bold px-3 py-1 rounded-full border ${
         isIncome
           ? 'bg-[#1a2e00] border-[#4a7a00] text-[#C9FA30]'
+          : isTransfer
+          ? 'bg-[#001a2e] border-[#004a7a] text-[#4A9EFF]'
           : 'bg-transparent border-[#2a2a3f] text-[#888]'
       }`}
     >
@@ -35,7 +40,7 @@ function CategoryBadge({ label, typeLabel }: { label: string; typeLabel: string 
   );
 }
 
-export default function TransactionTable({ transactions, pagination, currency, onPageChange }: TransactionTableProps) {
+export default function TransactionTable({ transactions, pagination, currency, onPageChange, onRowClick }: TransactionTableProps) {
   return (
     <div>
       {/* Table */}
@@ -59,7 +64,8 @@ export default function TransactionTable({ transactions, pagination, currency, o
             return (
               <div
                 key={t.transactionId}
-                className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] px-4 py-4 border-b border-[#1a1a2e] hover:bg-[#0e0e1c] transition-colors items-center"
+                onClick={() => onRowClick(t)}
+                className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] px-4 py-4 border-b border-[#1a1a2e] hover:bg-[#0e0e1c] transition-colors items-center cursor-pointer"
               >
                 {/* Transaction */}
                 <div className="flex items-center gap-3">
