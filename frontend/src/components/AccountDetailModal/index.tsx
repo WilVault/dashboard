@@ -70,7 +70,7 @@ export default function AccountDetailModal({ account, onClose, onDeleted }: Prop
 
           {/* ── LEFT PANEL — account info ── */}
           <div
-            className="w-64 flex-shrink-0 flex flex-col p-6 relative overflow-hidden"
+            className="w-64 shrink-0 flex flex-col p-6 relative overflow-hidden"
             style={{ background: `linear-gradient(160deg, ${color}18 0%, #07070f 65%)` }}
           >
             {/* glow */}
@@ -182,7 +182,7 @@ export default function AccountDetailModal({ account, onClose, onDeleted }: Prop
                         className="flex justify-between items-center py-3 border-b border-[#1a1a2e] last:border-0"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-xl bg-[#07070f] border border-[#1a1a2e] flex items-center justify-center text-lg flex-shrink-0">
+                          <div className="w-9 h-9 rounded-xl bg-[#07070f] border border-[#1a1a2e] flex items-center justify-center text-lg shrink-0">
                             {t.transactionCategory?.icon ?? '💳'}
                           </div>
                           <div>

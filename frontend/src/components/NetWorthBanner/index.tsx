@@ -94,7 +94,7 @@ export default function NetWorthBanner({ data, currency }: Props) {
             {accounts.map((a: any) => (
               <div key={a.accountId} className="flex items-center gap-1.5">
                 <div
-                  className="w-2 h-2 rounded-full flex-shrink-0"
+                  className="w-2 h-2 rounded-full shrink-0"
                   style={{ backgroundColor: a.color ?? '#C9FA30' }}
                 />
                 <p className="text-[#4A4A68] text-xs">{a.accountName}</p>
