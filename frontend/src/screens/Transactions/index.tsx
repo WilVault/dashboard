@@ -1,4 +1,5 @@
 import { useReducer, useEffect, useCallback, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { getTransactions, getTransactionCategories, getTransactionTypes } from '../../services/transactions';
 import { getAccounts } from '../../services/accounts';
 import { useLoader } from '../../context/LoaderContext';
@@ -21,42 +22,42 @@ const ACTION_TYPES = {
   SET_TRANSACTION_TYPES:      'SET_TRANSACTION_TYPES',
 } as const;
 
-const initialState = {
-  transactions:          [] as any[],
-  accounts:              [] as any[],
-  transactionCategories: [] as any[],
-  transactionTypes:      [] as any[],
-  summary: {
-    totalIncome:   '',
-    totalExpenses: '',
-    net:           '',
-  },
-  pagination: {
-    total:     0,
-    page:      1,
-    page_size: 20,
-    pages:     0,
-  },
-  filters: {
-    transactionType:     '',
-    transactionCategory: '',
-    title:               '',
-    dateFrom:            '',
-    dateTo:              '',
-    page:                1,
-    pageSize:            20,
-    accountName:         '',
-  },
-  error: null as string | null,
+type Filters = {
+  transactionType:     string;
+  transactionCategory: string;
+  title:               string;
+  dateFrom:            string;
+  dateTo:              string;
+  page:                number;
+  pageSize:            number;
+  accountName:         string;
 };
 
-type State = typeof initialState;
+type State = {
+  transactions:          any[];
+  accounts:              any[];
+  transactionCategories: any[];
+  transactionTypes:      any[];
+  summary: {
+    totalIncome:   string;
+    totalExpenses: string;
+    net:           string;
+  };
+  pagination: {
+    total:     number;
+    page:      number;
+    page_size: number;
+    pages:     number;
+  };
+  filters: Filters;
+  error: string | null;
+};
 
 type Action =
   | { type: typeof ACTION_TYPES.SET_TRANSACTIONS;           transactions: any[] }
   | { type: typeof ACTION_TYPES.SET_SUMMARY;                summary: State['summary'] }
   | { type: typeof ACTION_TYPES.SET_PAGINATION;             pagination: State['pagination'] }
-  | { type: typeof ACTION_TYPES.SET_FILTERS;                filters: Partial<State['filters']> }
+  | { type: typeof ACTION_TYPES.SET_FILTERS;                filters: Partial<Filters> }
   | { type: typeof ACTION_TYPES.SET_ERROR;                  error: string | null }
   | { type: typeof ACTION_TYPES.SET_ACCOUNTS;               accounts: any[] }
   | { type: typeof ACTION_TYPES.SET_TRANSACTION_CATEGORIES; transactionCategories: any[] }
@@ -93,12 +94,51 @@ const TYPE_PILLS = [
 ];
 
 export default function Transactions() {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [searchParams, setSearchParams] = useSearchParams();
   const { show, hide } = useLoader();
   const { person } = useSession();
-  const [searchInput, setSearchInput] = useState('');
-  const [showModal, setShowModal] = useState(false);
+
+  // initialise filters from URL params
+  const initialFilters: Filters = {
+    transactionType:     searchParams.get('transactionType')     ?? '',
+    transactionCategory: searchParams.get('transactionCategory') ?? '',
+    title:               searchParams.get('title')               ?? '',
+    dateFrom:            searchParams.get('dateFrom')            ?? '',
+    dateTo:              searchParams.get('dateTo')              ?? '',
+    page:                parseInt(searchParams.get('page')       ?? '1'),
+    pageSize:            parseInt(searchParams.get('pageSize')   ?? '20'),
+    accountName:         searchParams.get('accountName')         ?? '',
+  };
+
+  const [state, dispatch] = useReducer(reducer, {
+    transactions:          [],
+    accounts:              [],
+    transactionCategories: [],
+    transactionTypes:      [],
+    summary: { totalIncome: '', totalExpenses: '', net: '' },
+    pagination: { total: 0, page: 1, page_size: 20, pages: 0 },
+    filters: initialFilters,
+    error: null,
+  });
+
+  const [searchInput, setSearchInput]         = useState(searchParams.get('title') ?? '');
+  const [showModal, setShowModal]             = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
+
+  // sync filters → URL
+  useEffect(() => {
+    const params: Record<string, string> = {};
+    const { transactionType, transactionCategory, title, dateFrom, dateTo, page, pageSize, accountName } = state.filters;
+    if (transactionType)     params.transactionType     = transactionType;
+    if (transactionCategory) params.transactionCategory = transactionCategory;
+    if (title)               params.title               = title;
+    if (dateFrom)            params.dateFrom            = dateFrom;
+    if (dateTo)              params.dateTo              = dateTo;
+    if (page > 1)            params.page                = String(page);
+    if (pageSize !== 20)     params.pageSize            = String(pageSize);
+    if (accountName)         params.accountName         = accountName;
+    setSearchParams(params, { replace: true });
+  }, [state.filters]);
 
   const fetchTransactions = useCallback(async () => {
     dispatch({ type: ACTION_TYPES.SET_ERROR, error: null });

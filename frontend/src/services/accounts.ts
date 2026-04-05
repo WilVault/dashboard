@@ -8,6 +8,18 @@ export function getAccountById(accountId: number) {
   return api.get(`/accounts/${accountId}`);
 }
 
+export function getAccountTypes() {
+  return api.get('/account-types');
+}
+
+export function getAccountBalance(accountId: number) {
+  return api.get(`/accounts/${accountId}/balance`);
+}
+
+export function getAccountTransactions(accountId: number) {
+  return api.get(`/accounts/${accountId}/transactions`);
+}
+
 export function createAccount(data: {
   account_name:    string;
   account_type_id: number;
@@ -16,4 +28,12 @@ export function createAccount(data: {
   icon?:           string;
 }) {
   return api.post('/accounts', data);
+}
+
+export function deleteAccount(accountId: number) {
+  return api.delete(`/accounts/${accountId}`);
+}
+
+export function getNetWorth() {
+  return api.get('/accounts/net-worth');
 }

@@ -40,6 +40,8 @@ class Account:
         self.account_type: Optional[AccountType] = None
         self.color: Optional[str] = None
         self.icon: Optional[str] = None
+        self.balance: float = 0.0
+        self.last_transaction_date: Optional[str] = None
         self.created_at: Optional[datetime] = None
         self.updated_at: Optional[datetime] = None
 
@@ -52,6 +54,8 @@ class Account:
         a.account_id   = row.get("id")
         a.person_id    = row.get("person_id")
         a.account_name = row.get("account_name")
+        a.balance = float(row.get("balance", 0))
+        a.last_transaction_date = str(row.get("last_transaction_date")) if row.get("last_transaction_date") else None
         a.color        = row.get("color")
         a.icon         = row.get("icon")
         a.created_at   = row.get("created_at")
@@ -92,6 +96,8 @@ class AccountSchema(Schema):
     accountType = fields.Nested(AccountTypeSchema, attribute='account_type', allow_none=True)
     color       = fields.Str(allow_none=True)
     icon        = fields.Str(allow_none=True)
+    balance     = fields.Float()
+    lastTransactionDate = fields.Str(attribute='last_transaction_date', allow_none=True)
 
     class Meta:
         fields = (
@@ -101,6 +107,8 @@ class AccountSchema(Schema):
             'accountType',
             'color',
             'icon',
+            'balance',
+            'lastTransactionDate'
         )
         ordered = True
 

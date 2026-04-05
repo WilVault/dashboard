@@ -103,3 +103,78 @@ def create_account():
             message=str(e),
             status_code=500
         )
+
+@account_blueprint.route('/account-types', methods=['GET'])
+@jwt_required
+def get_account_types():
+    try:
+        types = account_repository.get_all_account_types()
+        return api_response_format(
+            message="Account types retrieved successfully",
+            data={ 'types': [t.serialize() for t in types] },
+            status_code=200
+        )
+    except Exception as e:
+        return api_response_format(message=str(e), status_code=500)
+
+
+@account_blueprint.route('/accounts/<int:account_id>/balance', methods=['GET'])
+@jwt_required
+def get_account_balance(account_id: int):
+    try:
+        person_id = int(g.user.get('sub'))
+
+        account = account_repository.get_account_by_id(account_id)
+        if not account:
+            return api_response_format(message="Account not found", data={}, status_code=404)
+        if account.person_id != person_id:
+            return api_response_format(message="Forbidden", data={}, status_code=403)
+
+        balance = account_repository.get_account_balance(account_id)
+        return api_response_format(
+            message="Account balance retrieved successfully",
+            data={ 'balance': str(balance) },
+            status_code=200
+        )
+    except Exception as e:
+        return api_response_format(message=str(e), status_code=500)
+
+
+@account_blueprint.route('/accounts/<int:account_id>', methods=['DELETE'])
+@jwt_required
+def delete_account(account_id: int):
+    try:
+        person_id = int(g.user.get('sub'))
+
+        account = account_repository.get_account_by_id(account_id)
+        if not account:
+            return api_response_format(message="Account not found", data={}, status_code=404)
+        if account.person_id != person_id:
+            return api_response_format(message="Forbidden", data={}, status_code=403)
+
+        success = account_repository.delete_account(account_id)
+        if not success:
+            return api_response_format(message="Failed to delete account", data={}, status_code=500)
+
+        return api_response_format(
+            message="Account deleted successfully",
+            data={},
+            status_code=200
+        )
+    except Exception as e:
+        return api_response_format(message=str(e), status_code=500)
+
+
+@account_blueprint.route('/accounts/net-worth', methods=['GET'])
+@jwt_required
+def get_net_worth():
+    try:
+        person_id = int(g.user.get('sub'))
+        data = account_repository.get_net_worth(person_id)
+        return api_response_format(
+            message="Net worth retrieved successfully",
+            data=data,
+            status_code=200
+        )
+    except Exception as e:
+        return api_response_format(message=str(e), status_code=500)
