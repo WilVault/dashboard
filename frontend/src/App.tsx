@@ -12,7 +12,6 @@ import AuthScreen from './screens/AuthScreen';
 // Private screens
 import Dashboard from './screens/Dashboard';
 import Transactions from './screens/Transactions';
-import Reports from './screens/Reports';
 import Accounts from './screens/Accounts';
 import Profile from './screens/Profile';
 
@@ -91,7 +90,6 @@ function App() {
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="transactions" element={<Transactions />} />
-              <Route path="reports" element={<Reports />} />
               <Route path="accounts" element={<Accounts />} />
               <Route path="profile" element={<Profile />} />
 

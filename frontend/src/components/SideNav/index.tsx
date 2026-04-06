@@ -3,7 +3,6 @@ import { useSession } from '../../context/SessionContext';
 import {
   DashboardLogo,
   TransactionLogo,
-  ReportsLogo,
   AccountsLogo,
   WilvaultLogo
 } from '../../icons';
@@ -12,7 +11,6 @@ import './styles.css';
 const navItems = [
   { label: 'Dashboard', path: '/dashboard', icon: <DashboardLogo width={19} height={19} className='filter-green'/> },
   { label: 'Transactions', path: '/transactions', icon: <TransactionLogo width={19} height={19} className='filter-green'/> },
-  { label: 'Reports', path: '/reports', icon: <ReportsLogo width={19} height={19} className='filter-green'/>},
   { label: 'Accounts', path: '/accounts', icon: <AccountsLogo width={19} height={19} className='filter-green'/>},
 ];
 
