@@ -242,27 +242,34 @@ function LoginComponent({ state, dispatch, handleLogin }: LoginProps) {
 }
 
 function RegisterComponent({ state, dispatch, handleValidateRegisterFields }: RegisterProps) {
-  return <div>
-      <div className="space-y-3">
+  return (
+    <div>
+      <div className="space-y-4">
+
+        {/* Full Name + Email */}
+        <div className="grid sm:grid-cols-2 gap-3">
+          <div>
+            <p className="text-xs text-[#4A4A68] mb-2 uppercase">Full Name</p>
+            <Input
+              type="text"
+              value={state.registerFullName}
+              onChange={e => dispatch({ type: ACTION_TYPES.SET_REGISTER_FULL_NAME, fullName: e.target.value })}
+              placeholder="Juan dela Cruz"
+            />
+          </div>
+          <div>
+            <p className="text-xs text-[#4A4A68] mb-2 uppercase">Email</p>
+            <Input
+              type="email"
+              value={state.registerEmail}
+              onChange={e => dispatch({ type: ACTION_TYPES.SET_REGISTER_EMAIL, email: e.target.value })}
+              placeholder="juan@example.com"
+            />
+          </div>
+        </div>
+
+        {/* Currency */}
         <div>
-          <p className="text-xs text-[#4A4A68] mb-2 uppercase">Full Name</p>
-          <Input
-            type="text"
-            value={state.registerFullName}
-            onChange={e => dispatch({ type: ACTION_TYPES.SET_REGISTER_FULL_NAME, fullName: e.target.value })}
-            placeholder="Juan dela Cruz"
-          />
-        </div>
-        <div className='mt-5'>
-          <p className="text-xs text-[#4A4A68] mb-2 uppercase">Email</p>
-          <Input
-            type="email"
-            value={state.registerEmail}
-            onChange={e => dispatch({ type: ACTION_TYPES.SET_REGISTER_EMAIL, email: e.target.value })}
-            placeholder="juan@example.com"
-          />
-        </div>
-        <div className='mt-5'>
           <p className="text-xs text-[#4A4A68] mb-2 uppercase">Currency</p>
           <SelectCurrency
             currencies={state.currencies}
@@ -270,38 +277,49 @@ function RegisterComponent({ state, dispatch, handleValidateRegisterFields }: Re
             onChange={currencyId => dispatch({ type: ACTION_TYPES.SET_REGISTER_CURRENCY_ID, currencyId })}
           />
         </div>
-        <div className='mt-5'>
-          <p className="text-xs text-[#4A4A68] mb-2 uppercase">Password</p>
-          <PasswordInput
-            value={state.registerPassword}
-            onChange={e => dispatch({ type: ACTION_TYPES.SET_REGISTER_PASSWORD, password: e.target.value })}
-            placeholder="•••••••••••"
-          />
+
+        {/* Password + Confirm Password */}
+        <div className="grid sm:grid-cols-2 gap-3">
+          <div>
+            <p className="text-xs text-[#4A4A68] mb-2 uppercase">Password</p>
+            <PasswordInput
+              value={state.registerPassword}
+              onChange={e => dispatch({ type: ACTION_TYPES.SET_REGISTER_PASSWORD, password: e.target.value })}
+              placeholder="•••••••••••"
+            />
+          </div>
+          <div>
+            <p className="text-xs text-[#4A4A68] mb-2 uppercase">Confirm Password</p>
+            <Input
+              type="password"
+              value={state.registerConfirmPassword}
+              onChange={e => dispatch({ type: ACTION_TYPES.SET_REGISTER_CONFIRM_PASSWORD, confirmPassword: e.target.value })}
+              placeholder="•••••••••••"
+            />
+          </div>
         </div>
-        <div className='mt-5'>
-          <p className="text-xs text-[#4A4A68] mb-2 uppercase">Confirm Password</p>
-          <Input
-            type="password"
-            value={state.registerConfirmPassword}
-            onChange={e => dispatch({ type: ACTION_TYPES.SET_REGISTER_CONFIRM_PASSWORD, confirmPassword: e.target.value })}
-            placeholder="•••••••••••"
-          />
-        </div>
-        <div className='mt-5 flex items-center gap-2'>
+
+        {/* Terms */}
+        <div className="flex items-center gap-2 py-2">
           <Checkbox
             checked={state.registerAgreeToTerms}
             onChange={val => dispatch({ type: ACTION_TYPES.SET_AGREE_TO_TERMS, agreeToTerms: val })}
           />
-          <p className="text-xs text-[#4A4A68]">I agree to the <span className='text-[#C9FA30] font-bold'>Terms of Service</span> and <span className='text-[#C9FA30] font-bold'>Privacy Policy</span>.</p>
+          <p className="text-xs text-[#4A4A68]">
+            I agree to the <span className="text-[#C9FA30] font-bold">Terms of Service</span> and <span className="text-[#C9FA30] font-bold">Privacy Policy</span>.
+          </p>
         </div>
+
         <button
           onClick={handleValidateRegisterFields}
-          className="w-full py-3 bg-[#C9FA30] text-black text-sm font-semibold rounded-lg transition-all mt-3 hover:opacity-70 cursor-pointer"
+          className="w-full py-3 bg-[#C9FA30] text-black text-sm font-semibold rounded-lg transition-all hover:opacity-70 cursor-pointer"
         >
           Start now →
         </button>
+
       </div>
-  </div>
+    </div>
+  );
 }
 
 function EmailVerificationComponent({ state, dispatch, show, hide }: EmailVerificationProps) {
@@ -702,7 +720,7 @@ export default function AuthScreen() {
   }
 
   return (
-    <div className="w-full sm:max-w-115 bg-[#0C0C17] rounded-2xl shadow-2xl p-8 space-y-5 overflow-y-auto max-h-screen scrollbar-hide">
+    <div className="w-full sm:max-w-lg bg-[#0C0C17] rounded-2xl shadow-2xl p-8 space-y-5 overflow-y-auto max-h-screen scrollbar-hide">
       <div className=''>
         <div className='flex justify-center'>
           <WilvaultLogo width={40} height={40} className='mb-3' />
