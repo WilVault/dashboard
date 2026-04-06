@@ -17,10 +17,6 @@ export function TransactionLogo({ width, height, className }: { width?: number, 
   return <img src={transactionLogoUrl} width={width} height={height} className={className} alt="Transaction Logo" />
 }
 
-export function BudgetsLogo({ width, height, className }: { width?: number, height?: number, className?: string }) {
-  return <img src={budgetLogoUrl} width={width} height={height} className={className} alt="Budgets Logo" />
-}
-
 export function ReportsLogo({ width, height, className }: { width?: number, height?: number, className?: string }) {
   return <img src={reportsLogoUrl} width={width} height={height} className={className} alt="Reports Logo" />
 }
