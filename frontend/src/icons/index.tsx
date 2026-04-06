@@ -1,7 +1,6 @@
 import wilvaultLogoUrl from "../assets/wilvault-logo.svg";
 import dashboardLogoUrl from "../assets/dashboard-logo.svg";
 import transactionLogoUrl from "../assets/transactions-logo.svg";
-import budgetLogoUrl from "../assets/budgets-logo.svg";
 import reportsLogoUrl from "../assets/reports-logo.svg";
 import accountsLogoUrl from "../assets/accounts-logo.svg";
 
