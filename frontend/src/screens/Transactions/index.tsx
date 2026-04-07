@@ -185,7 +185,7 @@ export default function Transactions() {
   }, []);
 
   useEffect(() => {
-    Promise.all([fetchTransactions(), fetchLookups()]);
+    fetchLookups();
   }, []);
 
   useEffect(() => {
