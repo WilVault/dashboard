@@ -26,7 +26,7 @@ function CustomTooltip({ active, payload, currency }: any) {
 export default function SpendingBreakdown({ data, currency }: Props) {
   if (!data || data.length === 0) {
     return (
-      <div className="bg-[#0C0C17] border border-[#1a1a2e] rounded-2xl p-6 flex flex-col items-center justify-center min-h-[300px]">
+      <div className="bg-[#0C0C17] border border-[#1a1a2e] rounded-2xl p-6 flex flex-col items-center justify-center min-h-75">
         <p className="text-[#4A4A68] text-sm">No spending data for this period.</p>
       </div>
     );
