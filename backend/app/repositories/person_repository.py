@@ -99,3 +99,43 @@ def update_profile_url(email: str, profile_url: str, profile_url_customized: boo
     except Exception as e:
         print(f"update_profile_url error: {e}")
         return False
+
+def update_person(person_id: int, full_name: str = None, currency_id: int = None) -> bool:
+    try:
+        fields = []
+        params = []
+
+        if full_name is not None:
+            fields.append('full_name = %s')
+            params.append(full_name)
+
+        if currency_id is not None:
+            fields.append('currency_id = %s')
+            params.append(currency_id)
+
+        if not fields:
+            return True
+
+        fields.append('updated_at = NOW()')
+        params.append(person_id)
+
+        database.execute(
+            f"UPDATE person SET {', '.join(fields)} WHERE id = %s",
+            params
+        )
+        return True
+    except Exception as e:
+        print(f"update_person error: {e}")
+        return False
+
+
+def delete_person(person_id: int) -> bool:
+    try:
+        database.execute(
+            'DELETE FROM person WHERE id = %s;',
+            [person_id]
+        )
+        return True
+    except Exception as e:
+        print(f"delete_person error: {e}")
+        return False

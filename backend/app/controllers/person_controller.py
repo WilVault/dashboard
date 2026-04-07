@@ -189,3 +189,50 @@ def upload_custom_avatar():
             data={},
             status_code=500
         )
+
+@person_blueprint.route('/persons/me', methods=['PATCH'])
+@jwt_required
+def update_me():
+    try:
+        person_id = int(g.user.get('sub'))
+        data = request.get_json()
+
+        full_name   = data.get('full_name')
+        currency_id = data.get('currency_id')
+
+        success = person_repository.update_person(
+            person_id   = person_id,
+            full_name   = full_name,
+            currency_id = currency_id,
+        )
+
+        if not success:
+            return api_response_format(message="Failed to update profile", data={}, status_code=500)
+
+        person = person_repository.get_person_by_id(person_id)
+        return api_response_format(
+            message="Profile updated successfully",
+            data={ 'user': person.serialize() },
+            status_code=200
+        )
+    except Exception as e:
+        return api_response_format(message=str(e), status_code=500)
+
+
+@person_blueprint.route('/persons/me', methods=['DELETE'])
+@jwt_required
+def delete_me():
+    try:
+        person_id = int(g.user.get('sub'))
+
+        success = person_repository.delete_person(person_id)
+        if not success:
+            return api_response_format(message="Failed to delete account", data={}, status_code=500)
+
+        return api_response_format(
+            message="Account deleted successfully",
+            data={},
+            status_code=200
+        )
+    except Exception as e:
+        return api_response_format(message=str(e), status_code=500)

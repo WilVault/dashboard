@@ -2,7 +2,15 @@ import api from '../helpers/apiClient';
 import type { Person } from '../types';
 
 export function getMe() {
-    return api.get<{ data: { user: Person } }>('/persons/me');
+  return api.get<{ data: { user: Person } }>('/persons/me');
+}
+
+export function updateMe(data: { full_name?: string; currency_id?: number }) {
+  return api.patch('/persons/me', data);
+}
+
+export function deleteMe() {
+  return api.delete('/persons/me');
 }
 
 export function uploadDefaultAvatar(email: string, full_name: string) {
