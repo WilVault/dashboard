@@ -63,7 +63,7 @@ export default function SpendingBreakdown({ data, currency }: Props) {
           <div key={item.category} className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <div
-                className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                className="w-2.5 h-2.5 rounded-full shrink-0"
                 style={{ backgroundColor: COLORS[i % COLORS.length] }}
               />
               <p className="text-[#888] text-sm">{item.icon} {item.category}</p>
