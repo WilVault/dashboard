@@ -48,7 +48,7 @@ export default function RecentTransactions({ transactions, currency }: Props) {
                 className="flex justify-between items-center py-3 border-b border-[#1a1a2e] last:border-0"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#07070f] border border-[#1a1a2e] flex items-center justify-center text-lg flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-[#07070f] border border-[#1a1a2e] flex items-center justify-center text-lg shrink-0">
                     {t.transaction_category_icon ?? '💳'}
                   </div>
                   <div>
