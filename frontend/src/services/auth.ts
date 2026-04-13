@@ -15,3 +15,7 @@ export function register(data: {
 }) {
   return api.post('/register', data);
 }
+
+export function resetPassword(email: string, new_password: string) {
+  return api.post('/reset-password', { email, new_password });
+}

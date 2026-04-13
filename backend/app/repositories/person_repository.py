@@ -139,3 +139,15 @@ def delete_person(person_id: int) -> bool:
     except Exception as e:
         print(f"delete_person error: {e}")
         return False
+
+
+def update_password(email: str, password_hash: str) -> bool:
+    try:
+        database.execute(
+            "UPDATE person SET password_hash = %s, updated_at = NOW() WHERE email = %s",
+            (password_hash, email)
+        )
+        return True
+    except Exception as e:
+        print(f"update_password error: {e}")
+        return False

@@ -129,3 +129,28 @@ def validate_email():
         data={ 'exists': False },
         status_code=200
     )
+
+
+@auth_blueprint.route('/reset-password', methods=['POST'])
+def reset_password():
+    data = request.get_json()
+    email        = data.get('email')
+    new_password = data.get('new_password')
+
+    if not email or not new_password:
+        return api_response_format(message="email and new_password are required", data={}, status_code=400)
+
+    if len(new_password) < 8:
+        return api_response_format(message="Password must be at least 8 characters", data={}, status_code=400)
+
+    person = person_repository.find_by_email(email)
+    if not person:
+        return api_response_format(message="Email not found", data={}, status_code=404)
+
+    password_hash = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt()).decode()
+    success = person_repository.update_password(email, password_hash)
+
+    if not success:
+        return api_response_format(message="Failed to reset password", data={}, status_code=500)
+
+    return api_response_format(message="Password reset successfully", data={}, status_code=200)
