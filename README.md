@@ -54,14 +54,8 @@ In summary: the app runs on a single EC2 instance. Docker Compose manages three 
 ```
 wilvault/
 ├── backend/
-│   ├── Dockerfile
-│   ├── requirements.txt
-│   └── run.py
 ├── frontend/
-│   ├── Dockerfile
-│   └── nginx/
 ├── nginx/
-│   └── nginx.conf
 ├── certbot/
 ├── docker-compose.yml
 ├── config.example.toml
@@ -70,7 +64,6 @@ wilvault/
 ├── run-docker.sh
 ├── run-frontend-local.sh
 ├── run-backend-local.sh
-└── infrastructure.html
 ```
 
 ---
