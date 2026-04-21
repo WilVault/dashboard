@@ -4,6 +4,12 @@ A personal finance dashboard for tracking accounts, transactions, and spending i
 
 ---
 
+## Screenshots
+<img src="https://wilvault-assets.s3.ap-southeast-1.amazonaws.com/readme/app-screenshot-1.png" width="600" />
+<img src="https://wilvault-assets.s3.ap-southeast-1.amazonaws.com/readme/app-screenshot-2.png" width="600"/>
+<img src="https://wilvault-assets.s3.ap-southeast-1.amazonaws.com/readme/app-screenshot-3.png" width="600"/>
+<img src="https://wilvault-assets.s3.ap-southeast-1.amazonaws.com/readme/app-screenshot-4.png" width="600"/>
+
 ## Modules
 
 ### Dashboard
@@ -37,7 +43,7 @@ Transactions belong to an account. Three types are supported: **income**, **expe
 
 ## Infrastructure
 
-<img src="./infrastructure.png" width="600" />
+<img src="https://wilvault-assets.s3.ap-southeast-1.amazonaws.com/readme/infrastructure.png" width="600" />
 
 In summary: the app runs on a single EC2 instance. Docker Compose manages three containers — Nginx, the React frontend, and the Flask backend. Nginx handles SSL termination and routes `/api/` traffic to the backend and everything else to the frontend. PostgreSQL is installed directly on the EC2 host and is reachable from the containers via the Docker bridge gateway. Static assets are stored in an S3 bucket.
 
