@@ -76,8 +76,8 @@ wilvault/
 **1. Clone the repository**
 
 ```bash
-git clone https://github.com/<your-username>/wilvault.git
-cd wilvault
+git clone https://github.com/WilVault/dashboard.git
+cd dashboard
 ```
 
 **2. Configure**
