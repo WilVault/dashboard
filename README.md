@@ -56,6 +56,7 @@ wilvault/
 ├── backend/
 ├── frontend/
 ├── nginx/
+├── readme-assets/
 ├── certbot/
 ├── docker-compose.yml
 ├── config.example.toml
