@@ -1,6 +1,6 @@
 # WilVault
 
-A self-hosted personal finance dashboard for tracking accounts, transactions, and spending insights — deployed on AWS EC2.
+A personal finance dashboard for tracking accounts, transactions, and spending insights.
 
 ---
 
@@ -37,7 +37,7 @@ Transactions belong to an account. Three types are supported: **income**, **expe
 
 ## Infrastructure
 
-![WilVault Infrastructure](./infrastructure.png)
+<img src="./infrastructure.png" width="600" />
 
 In summary: the app runs on a single EC2 instance. Docker Compose manages three containers — Nginx, the React frontend, and the Flask backend. Nginx handles SSL termination and routes `/api/` traffic to the backend and everything else to the frontend. PostgreSQL is installed directly on the EC2 host and is reachable from the containers via the Docker bridge gateway. Static assets are stored in an S3 bucket.
 
